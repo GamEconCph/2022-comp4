@@ -9,10 +9,11 @@ Den medfølgende notebook, `short.ipynb` loader spillerfunktioner fra mappen ./p
 
 Spillerfunktionen skal tage flg. inputs
 
-* `f_profit_own`: funktion af to inputs, som giver din profit, f_profit_own(p1, p2),
-* `f_profit_opponent`: samme, men for modstanderen, dog med modsat rækkefølge af inputs: f_profit_opponent(p2, p1),
+* `f_profit_own`: funktion af to inputs, som giver din profit, `f_profit_own(p1, p2)`,
+* `f_profit_opponent`: samme, men for modstanderen, dog med *modsat rækkefølge* af inputs: `f_profit_opponent(p2, p1)`,
 * `pmin`: float, mindste tilladte pris,
-* `pmax`: float, største tilladte pris.
+* `pmax`: float, største tilladte pris,
+* `discount_factor`: float, diskonteringsfaktorn (mellem 0.0 og 1.0)
 
 Nedenfor ser du et eksempel på en spillerfunktion, som vælger en tilfældig handling.
 
@@ -21,6 +22,29 @@ def play(self, f_profit_own, f_profit_opponent, pmin, pmax, history_own, history
   p = np.random.uniform(pmin, pmax)
   return p 
 ```
-  
+
 **Tilfældighed:** Du må gerne bruge tilfældighed, fx `np.random.uniform()` (eller `.normal()`) til at vælge blandt flere kandidater. 
 Turneringen vil blive gentaget 100 gange mellem dig og din modstander for at midle sådan tilfældighed ud.
+
+## Historikken 
+
+Du kan se i eksemplet `player5.py`, som foretager sig mere avancerede ting med historikken. 
+
+```Python
+name = 'Tit for Tat'
+def play(self, f_profit_own, f_profit_opponent, pmin, pmax, history_own, history_opponent, discount_factor):
+  T = len(history_own) # antal periode, der er spillet 
+  if T == 0: 
+    # første runde i spillet
+    p2 = (pmax-pmin)/2.0 # some (dumb) guess of opponent's strategy
+    f = lambda p1: -f_profit_own(p1,p2)
+    res = minimize_scalar(f, p2, bounds=(pmin,pmax))
+    p = res.x
+  else: 
+    pj_lag = history_opponent[-1] # the last thing our opponent played 
+    p = pj_lag # we play the same 
+  p = np.clip(p, pmin, pmax) # ensure we have not set something illegal
+  return p 
+```
+
+This function has a special case for the initial play and then always matches what the opponent did last period. 
