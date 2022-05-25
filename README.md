@@ -18,8 +18,9 @@ Spillerfunktionen skal tage flg. inputs
 Nedenfor ser du et eksempel på en spillerfunktion, som vælger en tilfældig handling.
 
 ```Python
+name = 'Randawg' # remember to use the same name in all competitions... 
 def play(self, f_profit_own, f_profit_opponent, pmin, pmax, history_own, history_opponent, discount_factor):
-  p = np.random.uniform(pmin, pmax)
+  p = np.random.uniform(pmin, pmax) # rather ineffecient strategy
   return p 
 ```
 
@@ -38,7 +39,7 @@ def play(self, f_profit_own, f_profit_opponent, pmin, pmax, history_own, history
     # første runde i spillet
     p2 = (pmax-pmin)/2.0 # some (dumb) guess of opponent's strategy
     f = lambda p1: -f_profit_own(p1,p2)
-    res = minimize_scalar(f, p2, bounds=(pmin,pmax))
+    res = minimize_scalar(f, p2, bounds=(pmin,pmax), options={'maxiter': 20})
     p = res.x
   else: 
     pj_lag = history_opponent[-1] # the last thing our opponent played 
@@ -47,4 +48,8 @@ def play(self, f_profit_own, f_profit_opponent, pmin, pmax, history_own, history
   return p 
 ```
 
-This function has a special case for the initial play and then always matches what the opponent did last period. 
+Denne funktion har en særlig undtagelse for den første periode i spillet, hvor der naturligvis ikke er nogen historik at betinge på. 
+
+Hvis du bruger numeriske solvere, så husk venligst at sætte `maxiter`, så den ikke bruger håbløst meget tid :) 
+
+
