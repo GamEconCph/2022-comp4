@@ -16,9 +16,11 @@ Spillerfunktionen skal tage flg. inputs
 
 Nedenfor ser du et eksempel på en spillerfunktion, som vælger en tilfældig handling.
 
+```Python
 def play(self, f_profit_own, f_profit_opponent, pmin, pmax, history_own, history_opponent, discount_factor):
   p = np.random.uniform(pmin, pmax)
   return p 
+```
   
 **Tilfældighed:** Du må gerne bruge tilfældighed, fx `np.random.uniform()` (eller `.normal()`) til at vælge blandt flere kandidater. 
 Turneringen vil blive gentaget 100 gange mellem dig og din modstander for at midle sådan tilfældighed ud.
